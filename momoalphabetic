@@ -65,3 +65,50 @@ int main() {
 
     return 0;
 }
+
+
+
+
+
+
+Monoalphabetic Cipher
+# Define the plaintext and ciphertext alphabets
+plain_alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+cipher_alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM"  # Example shuffled alphabet
+
+# Function to encrypt plaintext using the monoalphabetic cipher
+def encrypt(text):
+    encrypted_text = ""
+    for char in text:
+        if char.isalpha():
+            upper = char.upper()
+            index = plain_alphabet.index(upper)
+            new_char = cipher_alphabet[index]
+            encrypted_text += new_char.lower() if char.islower() else new_char
+        else:
+            encrypted_text += char  # Keep spaces and punctuation unchanged
+    return encrypted_text
+
+# Function to decrypt ciphertext back to plaintext
+def decrypt(text):
+    decrypted_text = ""
+    for char in text:
+        if char.isalpha():
+            upper = char.upper()
+            index = cipher_alphabet.index(upper)
+            new_char = plain_alphabet[index]
+            decrypted_text += new_char.lower() if char.islower() else new_char
+        else:
+            decrypted_text += char  # Keep spaces and punctuation unchanged
+    return decrypted_text
+
+# Taking input from user
+text = input("Enter plaintext: ")
+
+# Encrypt the input text
+encrypted_text = encrypt(text)
+print("Encrypted Text:", encrypted_text)
+
+# Decrypt the encrypted text
+decrypted_text = decrypt(encrypted_text)
+print("Decrypted Text:", decrypted_text)
