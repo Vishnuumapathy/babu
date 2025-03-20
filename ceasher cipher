@@ -1,3 +1,8 @@
+C=(P+k)mod26
+P=(C-K)mod26
+
+
+
 //*START
   //INPUT: Plaintext message
   //INPUT: Shift value (k)
