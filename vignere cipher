@@ -91,3 +91,46 @@ int main() {
 
     return 0;
 }
+
+
+Vignere Cipher
+import random
+
+# Function to generate a random key of given length
+def generate_key(length):
+    return [random.randint(0, 25) for _ in range(length)]
+
+# Function to encrypt the plaintext using the key
+def encrypt(plaintext, key):
+    plaintext = plaintext.upper().replace(" ", "")  # Convert to uppercase and remove spaces
+    ciphertext = ""
+
+    for i in range(len(plaintext)):
+        shift = key[i]  # Get the shift value from the key
+        new_char = chr(((ord(plaintext[i]) - ord('A') + shift) % 26) + ord('A'))
+        ciphertext += new_char
+
+    return ciphertext
+
+# Function to decrypt the ciphertext using the key
+def decrypt(ciphertext, key):
+    decrypted_text = ""
+
+    for i in range(len(ciphertext)):
+        shift = key[i]  # Get the shift value from the key
+        new_char = chr(((ord(ciphertext[i]) - ord('A') - shift) % 26) + ord('A'))
+        decrypted_text += new_char
+
+    return decrypted_text
+
+# Main program
+plaintext = input("Enter plaintext (A-Z only, no spaces): ").upper().replace(" ", "")
+key = generate_key(len(plaintext))  # Generate a random key of the same length as plaintext
+
+ciphertext = encrypt(plaintext, key)
+decrypted_text = decrypt(ciphertext, key)
+
+# Print results
+print("Generated Key: ", key)
+print("Encrypted Text: ", ciphertext)
+print("Decrypted Text: ", decrypted_text)
