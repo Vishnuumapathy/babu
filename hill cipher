@@ -1,0 +1,82 @@
+C=K×Pmod26
+P=K"-1×Cmod26
+
+
+
+START  
+INPUT plaintext  
+FORMAT plaintext into pairs of numbers  
+MULTIPLY pairs with the key matrix mod 26  
+CONVERT numbers back to letters  
+PRINT ciphertext  
+
+INPUT ciphertext  
+MULTIPLY with the inverse key matrix mod 26  
+CONVERT numbers back to plaintext  
+PRINT decrypted message  
+STOP  
+
+
+#include <stdio.h>
+#include <string.h>
+
+#define MOD 26
+
+// Key matrix for encryption
+int key[2][2] = { {9, 4}, {5, 7} };
+
+// Inverse key matrix for decryption
+int inverseKey[2][2] = { {19, 22}, {9, 17} };
+
+// Convert character to number (A=0, B=1, ..., Z=25)
+int charToNum(char ch) {
+    return ch - 'A';
+}
+
+// Convert number back to character
+char numToChar(int num) {
+    return num + 'A';
+}
+
+// Encrypts a 2-letter pair using the key matrix
+void encryptPair(char *a, char *b) {
+    int p1 = charToNum(*a);
+    int p2 = charToNum(*b);
+    *a = numToChar((key[0][0] * p1 + key[0][1] * p2) % MOD);
+    *b = numToChar((key[1][0] * p1 + key[1][1] * p2) % MOD);
+}
+
+// Decrypts a 2-letter pair using the inverse key matrix
+void decryptPair(char *a, char *b) {
+    int c1 = charToNum(*a);
+    int c2 = charToNum(*b);
+    *a = numToChar((inverseKey[0][0] * c1 + inverseKey[0][1] * c2) % MOD);
+    *b = numToChar((inverseKey[1][0] * c1 + inverseKey[1][1] * c2) % MOD);
+}
+
+// Function to process the text for encryption and decryption
+void hillCipher(char text[], int decrypt) {
+    for (int i = 0; i < strlen(text); i += 2) {
+        if (decrypt)
+            decryptPair(&text[i], &text[i + 1]);
+        else
+            encryptPair(&text[i], &text[i + 1]);
+    }
+}
+
+int main() {
+    char text[100];
+    
+    // Input and Encrypt
+    printf("Enter message (uppercase, no spaces): ");
+    scanf("%s", text);
+    
+    hillCipher(text, 0);
+    printf("Encrypted Text: %s\n", text);
+
+    // Decrypt the message
+    hillCipher(text, 1);
+    printf("Decrypted Text: %s\n", text);
+    
+    return 0;
+}
