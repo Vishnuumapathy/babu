@@ -1,0 +1,82 @@
+Same Row: Letters are replaced with the next right letter.
+Same Column: Letters are replaced with the one below.
+Rectangle Rule: Letters swap diagonally in the matrix.
+
+
+
+
+START  
+INPUT keyword  
+CONSTRUCT 5×5 matrix using the keyword  
+INPUT plaintext  
+PROCESS plaintext (remove 'J', insert 'X' if needed)  
+FOR each letter pair in plaintext:  
+    FIND positions in the 5×5 matrix  
+    APPLY Playfair encryption rules (row, column, rectangle)  
+PRINT encrypted text  
+STOP  
+
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define SIZE 5
+char matrix[SIZE][SIZE];
+
+// Function to create Playfair matrix from keyword
+void createMatrix(char key[]) {
+    int used[26] = {0}, row = 0, col = 0;
+    for (int i = 0; key[i] != '\0'; i++) {
+        char ch = toupper(key[i] == 'J' ? 'I' : key[i]);
+        if (!used[ch - 'A']) matrix[row][col++] = ch, used[ch - 'A'] = 1;
+        if (col == SIZE) row++, col = 0;
+    }
+    for (char ch = 'A'; ch <= 'Z'; ch++) {
+        if (ch == 'J') continue;
+        if (!used[ch - 'A']) matrix[row][col++] = ch, used[ch - 'A'] = 1;
+        if (col == SIZE) row++, col = 0;
+    }
+}
+
+// Function to find row & column of a character
+void findPos(char ch, int *row, int *col) {
+    if (ch == 'J') ch = 'I';
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            if (matrix[i][j] == ch) *row = i, *col = j;
+}
+
+// Function to encrypt a plaintext pair
+void encryptPair(char *a, char *b) {
+    int r1, c1, r2, c2;
+    findPos(*a, &r1, &c1);
+    findPos(*b, &r2, &c2);
+    *a = (r1 == r2) ? matrix[r1][(c1 + 1) % SIZE] : (c1 == c2) ? matrix[(r1 + 1) % SIZE][c1] : matrix[r1][c2];
+    *b = (r1 == r2) ? matrix[r2][(c2 + 1) % SIZE] : (c1 == c2) ? matrix[(r2 + 1) % SIZE][c2] : matrix[r2][c1];
+}
+
+// Function to format and encrypt the plaintext
+void playfairEncrypt(char text[]) {
+    char formatted[100]; int len = 0;
+    for (int i = 0; text[i] != '\0'; i++) {
+        if (isalpha(text[i])) formatted[len++] = toupper(text[i] == 'J' ? 'I' : text[i]);
+        if (len > 1 && formatted[len - 1] == formatted[len - 2]) formatted[len++] = 'X';
+    }
+    if (len % 2) formatted[len++] = 'X';
+    formatted[len] = '\0';
+
+    for (int i = 0; i < len; i += 2) encryptPair(&formatted[i], &formatted[i + 1]);
+
+    printf("Encrypted Text: %s\n", formatted);
+}
+
+// Main function
+int main() {
+    char key[50], text[100];
+    printf("Enter keyword: "), scanf("%s", key);
+    createMatrix(key);
+    printf("Enter plaintext: "), scanf(" %[^\n]", text);
+    playfairEncrypt(text);
+    return 0;
+}
