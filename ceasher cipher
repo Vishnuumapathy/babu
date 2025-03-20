@@ -46,3 +46,28 @@ int main() {
     printf("Encrypted message: %s\n", message);
     return 0;
 }
+
+
+
+Caeser CIpher 
+def caesar_cipher(message, key):
+    encrypted_message = ""
+
+    for ch in message:
+        if ch.isupper():
+            encrypted_message += chr(((ord(ch) - ord('A') + key) % 26) + ord('A'))
+        elif ch.islower():
+            encrypted_message += chr(((ord(ch) - ord('a') + key) % 26) + ord('a'))
+        else:
+            encrypted_message += ch  # Keep spaces and other characters unchanged
+    
+    return encrypted_message
+
+# Taking input from user
+message = input("Enter a message: ")
+key = int(input("Enter shift value (1-25): "))
+
+# Encrypting the message
+encrypted_message = caesar_cipher(message, key)
+
+print("Encrypted message:", encrypted_message)
